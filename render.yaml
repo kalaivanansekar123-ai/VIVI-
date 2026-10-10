@@ -1,0 +1,29 @@
+# Render Blueprint for the ViviMart Express + SQLite backend.
+# Deploy from the Render dashboard: New + -> Blueprint -> pick this repo.
+# The persistent disk keeps backend/db/vivimart.db across deploys/restarts.
+services:
+  - type: web
+    name: vivimart-api
+    runtime: node
+    plan: starter
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /var/data/vivimart.db
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+    disk:
+      name: vivimart-data
+      mountPath: /var/data
+      sizeGB: 1
